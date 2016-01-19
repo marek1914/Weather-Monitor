@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <title>Weather Monitor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    {#<meta http-equiv="refresh" content="120" >#}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/server.css') }}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/justgage.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jcanvas.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/temp-panel.js') }}"></script>
+
+    <script type="text/javascript">
+        window.metric = "{{metric}}";
+        window.units_temp = "{{units_temp}}";
+        window.units_dist = "{{units_dist}}";
+        window.units_speed = "{{units_speed}}";
+        window.units_pressure = "{{units_pressure}}";
+    </script>
+</head>
+
+<body>
+<h1>Willow Hills Weather Monitor</h1>
+<div class="update">Updated: <span id='update-time'></span></div>
+<div class="tile">
+    <h2 class="current-temp">Temperature & Humidity</h2>
+    <div>
+        <div id="current-temp" class="dashboard">
+            <div id="temp-gauge"></div>
+        </div>
+        <div id="other-temp" class="dashboard">
+            <table>
+            <tr><td class="label">Humidity:</td><td class="value humidity">--</td><td class="unit">%</td></tr>
+            {% if hot %}
+            <tr><td class="label">Heat Index:</td><td class="value heatindex">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
+            {% else %}
+            <tr><td class="label">Windchill:</td><td class="value windchill">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
+            {% endif %}
+            <tr><td class="label">Feels Like:</td><td class="value feel">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
+            <tr><td class="label">Dewpoint:</td><td class="value dewpoint">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div id="temp-forecast">
+        <table>
+        <tr><th colspan="2"><span>Past</span></th><th></th><th colspan="2"><span>Future</span></th></tr>
+        <tr>
+        <td><span class="label past1">Low:</span><span class="value past1">--</span><span class="unit">&deg;{{units_temp}}</span></td>
+        <td><span class="label past2">High:</span><span class="value past2">--</span><span class="unit">&deg;{{units_temp}}</span></td>
+        <td><span class="v-div"></span></td>
+        <td><span class="label future1">Low:</span><span class="value future1">--</span><span class="unit">&deg;{{units_temp}}</span></td>
+        <td><span class="label future2">High:</span><span class="value future2">--</span><span class="unit">&deg;{{units_temp}}</span></td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="tile">
+<h2 class="outlook">Outlook</h2>
+    <div id="outlook" class="dashboard">
+        <table>
+        <tr><td id="outlook-text"></td></tr>
+        <tr><td><img id="outlook-icon" src="" /></td></tr>
+        <tr><td class="label">Pressure</td></tr>
+        <tr><td><span class="value" id="pressure"></span><span class="value" id="presstrend"></span><span class="unit">{{units_pressure}}</span></td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="tile">
+<h2 class="wind">Wind</h2>
+    <div id="wind" class="dashboard">
+        <table>
+        <tr><td id="wind-compass"></td></tr>
+        <tr><td><span class="label">Speed:</span><span class="value wind" id="wind-speed"></span><span class="unit">{{units_speed}}</span></td></tr>
+        <tr><td><span class="label">Gusts:</span><span class="value wind" id="wind-gusts"></span><span class="unit">{{units_speed}}</span></td></tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

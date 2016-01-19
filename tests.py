@@ -12,13 +12,13 @@ import arrow #http://crsmithdev.com/arrow/
 import unittest
 from settings import TestingConfig
 
-from app import app, create_tables
+from flaskapp import app, create_tables
 
 from models import *
 from fetchData import *
 
 
-class TestUsersTweets(unittest.TestCase):
+class TestAll(unittest.TestCase):
     def setUp(self):
         create_tables(db)
 
@@ -69,7 +69,7 @@ class TestUsersTweets(unittest.TestCase):
         self.assertInRange(cond.windchill, -50, 50)
         self.assertInRange(cond.windgust, 0, 150)
         self.assertInRange(cond.windspeed, 0, 150)
-        self.assertInRange(cond.winddeg, 0, 360)
+        self.assertInRange(cond.winddir, 0, 360)
         self.assertInRange(cond.uv, 0, 10)
         self.assertInRange(cond.solarradiation, 0, 1000, True)
  

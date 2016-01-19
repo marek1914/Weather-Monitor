@@ -11,13 +11,13 @@ import arrow #http://crsmithdev.com/arrow/
 import pickle
 import json
 
-from app import app, create_tables
+from flaskapp import app, create_tables
 from models import *
 from wunderground import *
 
 def loadCurrentConditions():
     "Load the current conditions from the file. Call this from webserver"
-    fname = app.config.CONDITIONS_FILE
+    fname = app.config['CONDITIONS_FILE']
     try: # lead tho conditions object from previous call
         with open(fname,'r') as f:
             conditions = pickle.load(f)
@@ -44,7 +44,7 @@ def updateConditions(conditions = None):
         conditions.saveToDb()
 
     # save the conditions to a file
-    fname = app.config.CONDITIONS_FILE
+    fname = app.config['CONDITIONS_FILE']
     with open(fname, 'w') as f:
         pickle.dump(conditions, f)
 

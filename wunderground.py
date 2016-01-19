@@ -1,6 +1,8 @@
 import requests
 import json
 
+from models import *
+
 WUG_KEY = 'f843bbca5bf0222c'
 
 WUG_ROOT = 'http://api.wunderground.com/api/'
@@ -12,7 +14,8 @@ CONDITIONS = 'conditions'
 ASTRONOMY = 'astronomy'
 RECORDS = 'almanac'
 FORECAST = 'forecast'
-	   
+FORECAST10DAY = 'forecast10day'
+
 
 def fetchWundergroundData(requestType):
   "Query the Wundeground api"
@@ -40,7 +43,7 @@ def getWundergroundConditions(cond):
   cond.setTimestamp(convertWundergroundTimestamp(res['observation_time_rfc822']))
   cond.setTemperature(float(res['temp_c']))
   cond.setPressure(int(res['pressure_mb']))
-  cond.setPressureTrend(int(res['pressure_trend']))
+  #cond.setPressureTrend(int(res['pressure_trend']))
   cond.setHumidity(int(res['relative_humidity'][:-1]))
   cond.setWind(res['wind_degrees'], float(res['wind_kph']), float(res['wind_gust_kph']))
   cond.setRain(int(float(res['precip_1hr_in'])*25.4), int(float(res['precip_today_in'])*25.4)) # setRain keeps a running difference
@@ -50,7 +53,7 @@ def getWundergroundConditions(cond):
   try: # may be u'NA'
     hi = int(res['heat_index_c'])
   except:
-    hi = None 
+    hi = None
   cond.setHeatIndex(hi)
   cond.setWindChill(int(res['windchill_c']))
   cond.setRealFeel(int(res['feelslike_c']))
@@ -88,8 +91,80 @@ moonPhaseStr = res['phaseofMoon']
 // sun
 sunrise = getWGAstroTime(res['sunrise'])
 sunset = getWGAstroTime(res['sunset'])
+'''
+
+def getWundergroundForecastForDay(res):
+  "Save wundeground forecast for the given day"
+  fc = DailyForecast()
+  fc.setTimestamp(res['date']['epoch'])
+  fc.setLow(int(res['low']['celsius']))
+  fc.setHigh(int(res['high']['celsius']))
+  fc.setWind(res['maxwind']['kph'], res['maxwind']['degrees'])
+  return fc
+
+def getWundergroundDailyForecasts():
+  "save wundeground forecast for given day (0 - 9)"
+  res = fetchWundergroundData(FORECAST10DAY)
+  res = res['forecast']['simpleforecast']['forecastday'] # deferefence
+  forecasts = []
+  for fc in res:
+    forecasts.append(getWundergroundForecastForDay(fc))
+  return forecasts
 
 
+'''
+// forecast
+
+res['forecast']['simpleforecast']['forecastday'][0]
+len(res['forecast']['simpleforecast']['forecastday'])
+datestr = res['forecast']['simpleforecast']['forecastday'][1]['date']['epoch']
+low = res['forecast']['simpleforecast']['forecastday'][0]['low']['celsius']
+high = res['forecast']['simpleforecast']['forecastday'][0]['high']['celsius']
+windspeed = res['forecast']['simpleforecast']['forecastday'][0]['maxwind']['kph']
+winddir = res['forecast']['simpleforecast']['forecastday'][0]['maxwind']['degrees']
+percip_day = res['forecast']['simpleforecast']['forecastday'][0]['qpf_day']['mm']
+percip_night = res['forecast']['simpleforecast']['forecastday'][0]['qpf_night']['mm']
+snow_day = res['forecast']['simpleforecast']['forecastday'][0]['snow_day']['cm']
+snow_night = res['forecast']['simpleforecast']['forecastday'][0]['snow_night']['cm']
+
+
+output for res['forecast']['simpleforecast']['forecastday'][0]:
+{u'avehumidity': 90,
+ u'avewind': {u'degrees': 14, u'dir': u'NNE', u'kph': 0, u'mph': 0},
+ u'conditions': u'Overcast',
+ u'date': {u'ampm': u'PM',
+  u'day': 16,
+  u'epoch': u'1452992400',
+  u'hour': 19,
+  u'isdst': u'0',
+  u'min': u'00',
+  u'month': 1,
+  u'monthname': u'January',
+  u'monthname_short': u'Jan',
+  u'pretty': u'7:00 PM CST on January 16, 2016',
+  u'sec': 0,
+  u'tz_long': u'America/Chicago',
+  u'tz_short': u'CST',
+  u'weekday': u'Saturday',
+  u'weekday_short': u'Sat',
+  u'yday': 15,
+  u'year': 2016},
+ u'high': {u'celsius': u'2', u'fahrenheit': u'37'},
+ u'icon': u'cloudy',
+ u'icon_url': u'http://icons.wxug.com/i/c/k/cloudy.gif',
+ u'low': {u'celsius': u'-5', u'fahrenheit': u'23'},
+ u'maxhumidity': 0,
+ u'maxwind': {u'degrees': 0, u'dir': u'', u'kph': 11, u'mph': 7},
+ u'minhumidity': 0,
+ u'period': 1,
+ u'pop': 0,
+ u'qpf_allday': {u'in': 0.0, u'mm': 0},
+ u'qpf_day': {u'in': None, u'mm': None},
+ u'qpf_night': {u'in': 0.0, u'mm': 0},
+ u'skyicon': u'',
+ u'snow_allday': {u'cm': 0.0, u'in': 0.0},
+ u'snow_day': {u'cm': None, u'in': None},
+ u'snow_night': {u'cm': 0.0, u'in': 0.0}}
 
 
 "conditions"

@@ -11,13 +11,11 @@ then when you want to run your app, you point to main.py or `main.app`
 import os
 os.environ["RUNTIME_CONFIG"] = 'dev'
 
-from app import app, create_tables
-
+from flaskapp import run
 from models import *
 from views import *
 
 
 if __name__ == '__main__':
-    create_tables(db)
-    app.run()
+    run()
 

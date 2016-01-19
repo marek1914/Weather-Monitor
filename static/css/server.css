@@ -1,0 +1,107 @@
+body {
+    background-color: linen;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    font-weight: bold;
+    font-style: italic;
+    text-align: right;
+}
+
+h2 {
+    margin: 0;
+}
+
+.green {
+    color: black;
+    background-color: lightgreen;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.red {
+    color: yellow;
+    background-color: red;
+}
+
+.update {
+    margin-top: -1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
+}
+
+.tile {
+    float: left;
+    margin-right: 2em;
+}
+
+.tile h2 {
+    text-align: center;
+}
+
+div.dashboard {
+    float: left;
+}
+
+h2.current-temp {
+    margin-left: 1em;
+}
+
+#temp-gauge {
+    width:200px; 
+    /*height:150px;*/
+    margin-top: -20px;
+    display: inline-block;
+}
+
+#temp-ind {
+    font-size: 48px;
+    float: left;
+}
+
+#other-temp {
+    margin-top: 35px;
+    margin-left: 12px;
+}
+
+.label {
+    font-size: 16px;
+    color: gray;
+    clear: both;
+    text-align: left;
+    padding-right: 1em;
+}
+
+.value {
+    text-align: right;
+    min-width: 0;
+}
+
+.unit {
+    min-width: 0;
+    text-align: left;
+}
+
+#outlook table td {
+    text-align: center;
+}
+
+#temp-forecast {
+    clear:  both;
+}
+
+.v-div {
+    border: 2px solid blue;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.value.wind {
+    margin-right: 0.5em;
+}
