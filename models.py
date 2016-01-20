@@ -238,7 +238,8 @@ class CurrentConditions(object):
     def setDewpoint(self, dp):
         "This field can also be calculated"
         self.dewpoint = dp
-    def getDewpoint(self):
+    def getRawDewpoint(self):
+        "Return it is iso units, floating"
         #return rint(getTemperatureInUnits(self.dewpoint)) # calculate when we have our own data
 
         # from https://en.wikipedia.org/wiki/Dew_point
@@ -249,6 +250,9 @@ class CurrentConditions(object):
         c = 238.88 if T > 0 else 247.15
         gamma = log(rh/100.0) + ((b * T) / (c + T))
         dp = (c * gamma) / (b - gamma)
+        return dp
+    def getDewpoint(self):
+        dp = self.getRawDewpoint()
         return rint(getTemperatureInUnits(dp))
 
     # these are daily environ amts, but they come with the conditions call, so store them

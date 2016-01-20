@@ -46,6 +46,7 @@ def currTemp():
       windchill = cond.getWindChill(),
       feel = cond.getRealFeel(),
       dewpoint = cond.getDewpoint(),
+      rawdp = cond.getRawDewpoint()
     )
 
 @app.route('/outlook/')

@@ -35,15 +35,16 @@
         </div>
         <div id="other-temp" class="dashboard">
             <table>
-            <tr><td class="label">Humidity:</td><td class="value humidity">--</td><td class="unit">%</td></tr>
             {% if hot %}
             <tr><td class="label">Heat Index:</td><td class="value heatindex">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
             {% else %}
             <tr><td class="label">Windchill:</td><td class="value windchill">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
             {% endif %}
             <tr><td class="label">Feels Like:</td><td class="value feel">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
+            <tr><td class="label">Humidity:</td><td class="value humidity">--</td><td class="unit">%</td></tr>
             <tr><td class="label">Dewpoint:</td><td class="value dewpoint">--</td><td class="unit">&deg;{{units_temp}}</td></tr>
             </table>
+            <div id="dpscale"></div>
         </div>
     </div>
     <div id="temp-forecast">

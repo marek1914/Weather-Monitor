@@ -29,6 +29,7 @@ $(document).ready(function() {
 
     // create the canvas for the wind compass
     $('#wind-compass').html('<canvas width=130, height=130></canvas>');
+    $('#dpscale').html('<canvas width=160, height=14></canvas>');
 
     function drawWindCompass(curr, min, max) {
       // for jcanvas docs, see - http://projects.calebevans.me/jcanvas/docs/arcs/
@@ -143,6 +144,57 @@ $(document).ready(function() {
     }
 
 
+    function drawDewPointScale(dp) {
+      var jc = $('#dpscale canvas');
+
+      var sx = 15;
+      var sy = 2;
+      var w = 8;
+
+      var linbr = jc.createGradient({
+        x1: sx-w*2, y1: 0,
+        x2: sx, y2: 0,
+        c1: 'brown',
+        c2: '#0f0',
+      });
+      jc.drawRect({
+        fromCenter: false,
+        fillStyle: linbr,
+        x: sx-w*2, y: sy,
+        width: w*2,
+        height: 10
+      });
+
+      for (i=0,i2=1; i< 15; i++, i2++) {
+      var linear = jc.createGradient({
+        x1: sx+i*w, y1: 0,
+        x2: sx+i2*w, y2: 0,
+        c1: '#0'+(15-i).toString(16) + i.toString(16),
+        c2: '#0'+(15-i2).toString(16) + i2.toString(16),
+      });
+      jc.drawRect({
+        fromCenter: false,
+        fillStyle: linear,
+        x: sx+i*w, y: sy,
+        width: w,
+        height: 10
+      });
+      }
+
+      // for proper comfort scale, see https://en.wikipedia.org/wiki/Dew_point
+      var xpos = sx-w*2+(dp-8)*6-10;
+      xpos = Math.max(0, xpos); // set a floor of 0
+      xpos = Math.min(w*16.5, xpos);
+      var xscale = 180;
+      jc.drawRect({
+        fromCenter: false,
+        fillStyle: 'black',
+        x: xpos, y: sy-2,
+        width: 3,
+        height: 14,
+      });
+    }
+
     setInterval(function() {
       //tempGauge.refresh(getRandomInt(61,99));
       $("#update-time").load("/lastupdate/",function() {
@@ -154,6 +206,7 @@ $(document).ready(function() {
         $("#other-temp .windchill").html(data["windchill"]);
         $("#other-temp .feel").html(data["feel"]);
         $("#other-temp .dewpoint").html(data["dewpoint"]);
+        drawDewPointScale(data["rawdp"]);
       });
       $.getJSON("/hilo_temps/", function( data ) {
         $("#temp-forecast .label.past1").html(data["past1_label"]+':');
