@@ -75,6 +75,15 @@ def wind():
       gusts = cond.getWindGust(),
     )
 
+@app.route('/rain/')
+def rain():
+    cond = getCurrentConditions()
+    return jsonify(
+      ratewg = getDistInUnits(cond.rainrate),
+      rate = getDistInUnits(cond.getRainRate()),
+      amt = getDistInUnits(cond.rainamt),
+    )
+
 @app.route('/hilo_temps/')
 def hilow_temps():
   forecast = loadForecast()

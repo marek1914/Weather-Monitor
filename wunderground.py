@@ -1,3 +1,4 @@
+
 import requests
 import json
 
@@ -15,6 +16,7 @@ ASTRONOMY = 'astronomy'
 RECORDS = 'almanac'
 FORECAST = 'forecast'
 FORECAST10DAY = 'forecast10day'
+HOURLY10DAY = 'hourly10day'
 
 
 def fetchWundergroundData(requestType):
@@ -46,7 +48,7 @@ def getWundergroundConditions(cond):
   #cond.setPressureTrend(int(res['pressure_trend']))
   cond.setHumidity(int(res['relative_humidity'][:-1]))
   cond.setWind(res['wind_degrees'], float(res['wind_kph']), float(res['wind_gust_kph']))
-  cond.setRain(int(float(res['precip_1hr_in'])*25.4), int(float(res['precip_today_in'])*25.4)) # setRain keeps a running difference
+  cond.setRain(int(float(res['precip_1hr_in'])/25.4), int(float(res['precip_today_in'])/25.4)) # setRain keeps a running difference
 
   cond.setIcon(res['icon']) # cloudy
   cond.setOutlook(res['weather']) # eg Overcast
@@ -55,10 +57,13 @@ def getWundergroundConditions(cond):
   except:
     hi = None
   cond.setHeatIndex(hi)
-  cond.setWindChill(int(res['windchill_c']))
-  cond.setRealFeel(int(res['feelslike_c']))
-  cond.setDewpoint(res['dewpoint_c'])
-
+  try:
+    cond.setWindChill(int(res['windchill_c']))
+    cond.setRealFeel(int(res['feelslike_c']))
+    cond.setDewpoint(res['dewpoint_c'])
+  except:
+    pass
+    
   cond.setUV(int(res['UV']))
   try:
     sr = int(res['solarradiation'])
@@ -94,7 +99,7 @@ sunset = getWGAstroTime(res['sunset'])
 '''
 
 def getWundergroundForecastForDay(res):
-  "Save wundeground forecast for the given day"
+  "Save wundeground forecast for the given day (0 - 9)"
   fc = DailyForecast()
   fc.setTimestamp(res['date']['epoch'])
   fc.setLow(int(res['low']['celsius']))
@@ -103,7 +108,7 @@ def getWundergroundForecastForDay(res):
   return fc
 
 def getWundergroundDailyForecasts():
-  "save wundeground forecast for given day (0 - 9)"
+  "save wundeground forecast for next 10 days"
   res = fetchWundergroundData(FORECAST10DAY)
   res = res['forecast']['simpleforecast']['forecastday'] # deferefence
   forecasts = []
@@ -111,6 +116,55 @@ def getWundergroundDailyForecasts():
     forecasts.append(getWundergroundForecastForDay(fc))
   return forecasts
 
+def getWundergroundForecastForHour(res):
+  "Save wunderground forecast for given hour (0-239)"
+  fc = HourlyForecast()
+  fc.setTimestamp(res['FCTTIME']['epoch'])
+  fc.temp = res['temp']['metric']
+  fc.rain = res['qpf']['metric']
+  fc.snow = float(res['snow']['metric']) * 10.0 # cm to mm
+  fc.setWind(res['wspd']['metric'], res['wdir']['degrees'])
+  fc.pressure = res['mslp']['metric']
+  fc.humidity = res['humidity']
+  fc.icon = res['icon']
+  fc.cloudcover = res['sky']
+  fc.rainchance = res['pop']
+  return fc
+
+
+def getWundergroundHourlyForecasts():
+  "save wunderground forecast for next 10 days"
+  res = fetchWundergroundData(HOURLY10DAY)
+  fcs = res["hourly_forecast"] #dereference
+  forecasts = []
+  for fc in fcs:
+    forecasts.append(getWundergroundForecastForHour(fc))
+  return forecasts
+
+
+'''
+// hourly forecast
+u'condition': u'Overcast',
+ u'dewpoint': {u'english': u'15', u'metric': u'-9'},
+ u'fctcode': u'4',
+ u'feelslike': {u'english': u'20', u'metric': u'-7'},
+ u'heatindex': {u'english': u'-9999', u'metric': u'-9999'},
+ u'humidity': u'66',
+ u'icon': u'cloudy',
+ u'icon_url': u'http://icons.wxug.com/i/c/k/nt_cloudy.gif',
+ u'mslp': {u'english': u'30.32', u'metric': u'1027'},
+ u'pop': u'21',
+ u'qpf': {u'english': u'0.0', u'metric': u'0'},
+ u'sky': u'100',
+ u'snow': {u'english': u'0.0', u'metric': u'0'},
+ u'temp': {u'english': u'25', u'metric': u'-4'},
+ u'uvi': u'0',
+ u'wdir': {u'degrees': u'85', u'dir': u'E'},
+ u'windchill': {u'english': u'20', u'metric': u'-7'},
+ u'wspd': {u'english': u'4', u'metric': u'6'},
+ u'wx': u'Cloudy'}
+
+'''
 
 '''
 // forecast

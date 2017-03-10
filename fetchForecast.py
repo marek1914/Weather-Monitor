@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """
 This file has two uses:
-1) Run this file standalone via cron to update the forecast twice a day.
+1) Run this file standalone via cron to update the forecast twice a day:
+    env/bin/python fetchForecast.py
 2) From webserver, call loadForecast periodically to get new data for the page
 
 NOTE: Because the low temp is for the day following the actual forecast day, if we
-      get the forecast after midnight, we won't have access to the forecast for that 
+      get the forecast after midnight, we won't have access to the forecast for that
       morning. Therefore, we should get the forecast twice daily - 6am and 6pm.
 """
 import os
@@ -33,7 +34,7 @@ def getLatestForecast():
     forecast = Forecast()
     "Load current forecasts and update it & db"
     forecast.setDaily(getWundergroundDailyForecasts())
-    #forecast.setHourly(getWundergroundHourlyForecasts())
+    forecast.setHourly(getWundergroundHourlyForecasts())
 
     # save the forecasts to a file
     fname = app.config['FORECAST_FILE']
@@ -49,3 +50,8 @@ if __name__ == '__main__': # allow funcs above to be imported as a module
     for fc in forecast.daily:
         for key,val in fc.__dict__.items():
             print '  %s: %s' % (key, val)
+    print "Hourly Forecasts: "
+    for fc in forecast.hourly[:12]:
+        for key,val in fc.__dict__.items():
+            print '  %s: %s' % (key, val)
+

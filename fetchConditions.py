@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
 This file has two uses:
-1) Run this file standalone via cron to update the db every five mins.
+1) Run this file standalone via cron to update the db every five mins:
+    env/bin/python fetchConditions.py
 2) From webserver, call loadCurrentConditions periodically to get new data for the page
 """
 import os

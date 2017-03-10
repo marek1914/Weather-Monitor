@@ -28,7 +28,7 @@
 <h1>Willow Hills Weather Monitor</h1>
 <div class="update">Updated: <span id='update-time'></span></div>
 <div class="tile">
-    <h2 class="current-temp">Temperature & Humidity</h2>
+    <h2 class="current-temp">Temperature & Humidity<span class="toggle-units">C<i class="fa fa-exchange"></i>F</span></h2>
     <div>
         <div id="current-temp" class="dashboard">
             <div id="temp-gauge"></div>
@@ -80,6 +80,17 @@
         <tr><td id="wind-compass"></td></tr>
         <tr><td><span class="label">Speed:</span><span class="value wind" id="wind-speed"></span><span class="unit">{{units_speed}}</span></td></tr>
         <tr><td><span class="label">Gusts:</span><span class="value wind" id="wind-gusts"></span><span class="unit">{{units_speed}}</span></td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="tile">
+<h2 class="rain">Rain</h2>
+    <div id="rain" class="dashboard">
+        <table>
+        <tr><td><span class="label">RateWg:</span><span class="value rain" id="rain-ratewg"></span><span class="unit">{{units_dist}}</span></td></tr>
+        <tr><td><span class="label">Rate:</span><span class="value rain" id="rain-rate"></span><span class="unit">{{units_dist}}</span></td></tr>
+        <tr><td><span class="label">Amt:</span><span class="value rain" id="rain-amt"></span><span class="unit">{{units_dist}}</span></td></tr>
         </table>
     </div>
 </div>

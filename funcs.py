@@ -30,6 +30,13 @@ def getTemperatureInUnits(degC):
     units = getUnitsTemp()
     return degC if units == 'C' else CtoF(degC)
 
+def getDistInUnits(dist):
+  units = getUnitsDist()
+  if units == 'in':
+    return dist * 25.4
+  else:
+    return dist # mm
+    
 def getSpeedInUnits(speed):
     units = getUnitsSpeed()
     if units == 'mph':

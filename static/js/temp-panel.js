@@ -233,6 +233,12 @@ $(document).ready(function() {
         $("#wind-speed").html(data["speed"]);
         $("#wind-gusts").html(data["gusts"]);
       });
+
+      $.getJSON("/rain/", function( data ) {
+        $("#rain-ratewg").html(data["ratewg"]);
+        $("#rain-rate").html(data["rate"]);
+        $("#rain-amt").html(data["amt"]);
+      });
     }, 5000);
   };
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# screen version:
+# to view/restart django server, resume screen: screen -r leads
+screen -d -m -S weather bash -c 'cd /media/drive1/development/bin/WeatherMonitor; source env/bin/activate; ./main.py'

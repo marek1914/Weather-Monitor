@@ -1,6 +1,7 @@
 from math import log, sqrt
 import arrow
 
+# peewee is best lightweight DB wrapper - http://stackoverflow.com/questions/9026069/python-lightweight-database-wrapper-for-sqlite
 from peewee import *    # see - https://github.com/coleifer/peewee
 
 from flaskapp import app
@@ -294,7 +295,11 @@ class DailyForecast(object):
      It is not a model, but there is no better place to define it.
     """
     def __init__(self): # mins
-        pass
+        self.when = None
+        self.low = None
+        self.high = None
+        self.windspeed = None
+        self.winddir = None
 
     def setTimestamp(self, ts):
         "set when using epoch ts"
@@ -311,6 +316,33 @@ class DailyForecast(object):
     def setWind(self, speed, dir):
         self.windspeed = speed
         self.winddir = dir
+
+class HourlyForecast(object):
+    """Dynamic store of the forecast as retrieved from Wunderground.
+     It is not a model, but there is no better place to define it.
+    """
+    def __init__(self): # mins
+        self.when = None
+        self.temp = None
+        self.rain = None
+        self.snow = None
+        self.windspeed = None
+        self.winddir = None
+        self.pressure = None
+        self.humidity = None
+        self.icon = None
+        self.cloudcover = None
+        self.rainchance = None
+
+    def setTimestamp(self, ts):
+        "set when using epoch ts"
+        self.when = arrow.get(ts).datetime # utc
+
+    def setWind(self, speed, direction):
+        self.windspeed = speed
+        self.winddir = direction
+
+
 
 class Forecast(object):
     def __init__(self):
@@ -338,24 +370,29 @@ class Forecast(object):
         history1st12 = Condition.select().filter(Condition.when > startHr2).filter(Condition.when < startHr)
 
         "Figure the future hi & low"
-        if now.hour > 17: # after 5pm
-            # The afternoon high is past, so the morning's low should be 1st shown
-            # today's low is actually tomorrows
-            self.futureTemps.append(ForecastTemp(LOW, self.daily[0].low))
-            # today's high is past now, so get tomorrow's high
-            self.futureTemps.append(ForecastTemp(HIGH, self.daily[1].high))
+        try:
+            if now.hour > 17: # after 5pm
+                # The afternoon high is past, so the morning's low should be 1st shown
+                # today's low is actually tomorrows
+                self.futureTemps.append(ForecastTemp(LOW, self.daily[0].low))
+                # today's high is past now, so get tomorrow's high
+                self.futureTemps.append(ForecastTemp(HIGH, self.daily[1].high))
 
-            high = max([cond.temperature for cond in history2nd12])
-            low = min([cond.temperature for cond in history1st12])
-            self.pastTemps.append(ForecastTemp(LOW, low))
-            self.pastTemps.append(ForecastTemp(HIGH, high))
+                high = max([cond.temperature for cond in history2nd12])
+                low = min([cond.temperature for cond in history1st12])
+                self.pastTemps.append(ForecastTemp(LOW, low))
+                self.pastTemps.append(ForecastTemp(HIGH, high))
 
-        else: # now.hour is before 5, presumably sometime in the morning after the low
-            # the morning low is past, the afternoon high is coming up
-            self.futureTemps.append(ForecastTemp(HIGH, self.daily[0].high))
-            self.futureTemps.append(ForecastTemp(LOW, self.daily[0].low))
+            else: # now.hour is before 5, presumably sometime in the morning after the low
+                # the morning low is past, the afternoon high is coming up
+                self.futureTemps.append(ForecastTemp(HIGH, self.daily[0].high))
+                self.futureTemps.append(ForecastTemp(LOW, self.daily[0].low))
 
-            low = min([cond.temperature for cond in history2nd12])
-            high = max([cond.temperature for cond in history1st12])
-            self.pastTemps.append(ForecastTemp(HIGH, high))
-            self.pastTemps.append(ForecastTemp(LOW, low))
+                low = min([cond.temperature for cond in history2nd12])
+                high = max([cond.temperature for cond in history1st12])
+                self.pastTemps.append(ForecastTemp(HIGH, high))
+                self.pastTemps.append(ForecastTemp(LOW, low))
+        except:
+            pass
+
+
