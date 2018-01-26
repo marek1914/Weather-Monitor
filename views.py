@@ -114,6 +114,10 @@ def setUnits():
 @app.route('/')
 def index():
     cond = getCurrentConditions()
+    url = '{root}{key}/animatedradar/q/{loc}.gif?newmaps=1&rainsnow=1&radius=70&timelabel=1&timelabel.x=200&timelabel.y=20'.format(root=app.config['WUG_ROOT'], 
+                                                           key=app.config['WUG_KEY'], 
+                                                           loc=app.config['LOCATION'])
+    
     return render_template('index.html',
       #TODO - get rid of metric:
       metric = cond.metric,
@@ -122,4 +126,5 @@ def index():
       units_speed = getUnitsSpeed(),
       units_pressure = getUnitsPressure(),
       hot = True if CtoF(cond.temperature) >= 75 else False,
+      map_url = url,
     )

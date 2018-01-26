@@ -11,8 +11,17 @@ class Config(object):
     UNITS_DIST = 'in' # 'mm'
     UNITS_SPEED = 'knots' # kph, mph
     UNITS_PRESSURE = 'mb'
+    
+    WUG_KEY = 'f843bbca5bf0222c'
+    WUG_ROOT = 'http://api.wunderground.com/api/'
+    #LOCATION = 'KY/Mount_Hermon'
+    LOCATION = 'pws:KKYMOUNT35' # our Ambient Weather station. Format: pws:PWS_ID
+    
+    
     DEBUG = False
     TESTING = False
+    
+    
 
 class ProductionConfig(Config):
     pass

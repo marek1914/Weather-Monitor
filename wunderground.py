@@ -4,11 +4,9 @@ import json
 
 from models import *
 
-WUG_KEY = 'f843bbca5bf0222c'
+from settings import Config
 
-WUG_ROOT = 'http://api.wunderground.com/api/'
 
-LOCATION = 'KY/Mount_Hermon'
 
 # types of requests
 CONDITIONS = 'conditions'
@@ -19,9 +17,11 @@ FORECAST10DAY = 'forecast10day'
 HOURLY10DAY = 'hourly10day'
 
 
+#http://api.wunderground.com/api/f843bbca5bf0222c/conditions/q/pws:KKYMOUNT35.json
+
 def fetchWundergroundData(requestType):
   "Query the Wundeground api"
-  r = requests.get('{root}{key}/{request}/q/{loc}.json'.format(root=WUG_ROOT, key=WUG_KEY, loc=LOCATION, request=requestType))
+  r = requests.get('{root}{key}/{request}/q/{loc}.json'.format(root=Config.WUG_ROOT, key=Config.WUG_KEY, loc=Config.LOCATION, request=requestType))
   if r.status_code == 200:
     return r.json()
   else:
