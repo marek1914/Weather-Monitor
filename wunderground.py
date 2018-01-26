@@ -48,7 +48,7 @@ def getWundergroundConditions(cond):
   #cond.setPressureTrend(int(res['pressure_trend']))
   cond.setHumidity(int(res['relative_humidity'][:-1]))
   cond.setWind(res['wind_degrees'], float(res['wind_kph']), float(res['wind_gust_kph']))
-  cond.setRain(int(float(res['precip_1hr_in'])/25.4), int(float(res['precip_today_in'])/25.4)) # setRain keeps a running difference
+  cond.setRain(int(float(res['precip_1hr_in'])*25.4), int(float(res['precip_today_in'])*25.4)) # setRain keeps a running difference
 
   cond.setIcon(res['icon']) # cloudy
   cond.setOutlook(res['weather']) # eg Overcast
